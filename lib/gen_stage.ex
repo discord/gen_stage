@@ -2323,11 +2323,7 @@ defmodule GenStage do
         :ok
 
       excess ->
-        tags = case Metrics.metrics_self_name() do
-          nil -> []
-          name -> ["producer_name:#{name}"]
-        end
-        Metrics.increment("buffer.discarded", excess, tags: tags)
+        Metrics.increment("buffer.discarded", excess, tags: Metrics.default_tags())
     end
 
     :lists.foldl(&dispatch_info/2, %{stage | buffer: buffer}, perms)

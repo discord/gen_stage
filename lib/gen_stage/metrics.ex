@@ -12,4 +12,14 @@ defmodule GenStage.Metrics do
       _ -> nil
     end
   end
+
+  @doc """
+  Returns the default list of tags to use with metrics for GenStage.
+  """
+  def default_tags() do
+    case metrics_self_name() do
+      nil -> []
+      name -> ["producer_name:#{name}"]
+    end
+  end
 end
