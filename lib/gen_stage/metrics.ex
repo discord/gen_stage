@@ -4,7 +4,7 @@ defmodule GenStage.Metrics do
   use Instruments.CustomFunctions, prefix: "gen_stage"
 
   @doc """
-  Returns the registered name of the current process or nil.
+  Returns the registered name of the current process or "no_registered_name".
   """
   def metrics_self_name() do
     case Process.info(self(), :registered_name) do
