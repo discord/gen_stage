@@ -1,7 +1,7 @@
 defmodule GenStage.Metrics do
   @moduledoc false
 
-  use Instruments.CustomFunctions, prefix: "genstage"
+  use Instruments.CustomFunctions, prefix: "gen_stage"
 
   @doc """
   Returns the registered name of the current process or nil.
