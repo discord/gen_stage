@@ -1,4 +1,6 @@
 defmodule GenStage do
+  alias GenStage.Metrics
+
   @moduledoc ~S"""
   Stages are data-exchange steps that send and/or receive data
   from other stages.
@@ -2321,8 +2323,11 @@ defmodule GenStage do
         :ok
 
       excess ->
-        error_msg = 'GenStage producer ~tp has discarded ~tp events from buffer'
-        :error_logger.warning_msg(error_msg, [Utils.self_name(), excess])
+        tags = case Metrics.metrics_self_name() do
+          nil -> []
+          name -> ["producer_name:#{name}"]
+        end
+        Metrics.increment('buffer.discarded', excess, tags: tags)
     end
 
     :lists.foldl(&dispatch_info/2, %{stage | buffer: buffer}, perms)
