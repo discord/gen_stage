@@ -21,12 +21,13 @@ defmodule GenStage.Mixfile do
   end
 
   def application do
-    [applications: [:logger]]
+    [extra_applications: [:logger]]
   end
 
   defp deps do
     [
-      {:ex_doc, "~> 0.12", only: :docs}
+      {:ex_doc, "~> 0.12", only: :docs},
+      {:instruments, "~> 1.0.0"},
     ]
   end
 

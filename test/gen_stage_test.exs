@@ -699,16 +699,10 @@ defmodule GenStageTest do
       assert_receive {:consumed, [3, 4, 5, 6]}
     end
 
-    test "emits warning and keeps first when it exceeds configured size" do
+    test "keeps first when it exceeds configured size" do
       {:ok, producer} = Counter.start_link({:producer, 0, buffer_size: 5, buffer_keep: :first})
       0 = Counter.sync_queue(producer, [:a, :b, :c, :d, :e])
-
-      log =
-        capture_log(fn ->
-          0 = Counter.sync_queue(producer, [:f, :g, :h])
-        end)
-
-      assert log =~ "GenStage producer #{inspect(producer)} has discarded 3 events from buffer"
+      0 = Counter.sync_queue(producer, [:f, :g, :h])
 
       {:ok, consumer} = Forwarder.start_link({:consumer, self()})
       :ok = GenStage.async_subscribe(consumer, to: producer, max_demand: 4, min_demand: 0)
@@ -716,16 +710,10 @@ defmodule GenStageTest do
       assert_receive {:consumed, [:e]}
     end
 
-    test "emits warning and keeps last when it exceeds configured size" do
+    test "keeps last when it exceeds configured size" do
       {:ok, producer} = Counter.start_link({:producer, 0, buffer_size: 5})
       0 = Counter.sync_queue(producer, [:a, :b, :c, :d, :e])
-
-      log =
-        capture_log(fn ->
-          0 = Counter.sync_queue(producer, [:f, :g, :h])
-        end)
-
-      assert log =~ "GenStage producer #{inspect(producer)} has discarded 3 events from buffer"
+      0 = Counter.sync_queue(producer, [:f, :g, :h])
 
       {:ok, consumer} = Forwarder.start_link({:consumer, self()})
       :ok = GenStage.async_subscribe(consumer, to: producer, max_demand: 4, min_demand: 0)
